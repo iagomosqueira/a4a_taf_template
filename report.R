@@ -22,7 +22,7 @@ library(ggrepel)
 load("model/model.rda")
 
 # SETTINGS
-iy <- dims(stk)$minyear
+y0 <- dims(stk)$minyear
 dy <- dims(stk)$maxyear
 
 # -- data {{{ ----
@@ -74,7 +74,7 @@ dev.off()
 
 # PLOT discard ratio (data_discardratio)
 taf.png("data_discardratio.png")
-ggplot(window(discards.n(stk) / catch.n(stk), start=iy),
+ggplot(window(discards.n(stk) / catch.n(stk), start=y0),
   aes(x=year, y=data, colour=factor(age))) + geom_line() +
   geom_label_repel(data=function(d) d[d$year == dy, ], aes(label=age),
     colour="black") +
@@ -143,7 +143,7 @@ plot(run_sim, retro_stks[-1], metrics=list(Rec=rec, SSB=ssb, F=fbar)) +
     round(mohn(mohnMatrix(retro_stks, 'rec')), 2),
     round(mohn(mohnMatrix(retro_stks, 'ssb')), 2),
     round(mohn(mohnMatrix(retro_stks, 'fbar')), 2)))),
-    aes(x=mean(c(iy, dy)),
+    aes(x=mean(c(y0, dy)),
       y=Inf, label=label),
     vjust=1.5, hjust=0.5, size=4, parse=TRUE,
     inherit.aes = FALSE)
