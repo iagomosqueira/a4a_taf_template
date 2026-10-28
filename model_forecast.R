@@ -1,71 +1,66 @@
-# model.R - Run forecast
-# 2024_sol.27.4_forecast/model.R
+# model_forecast.R - Run short-terem forecast
+# a4a_taf_template/model_forecast.R
 
-# Copyright Iago MOSQUEIRA (WMR), 2022
-# Author: Iago MOSQUEIRA (WMR) <iago.mosqueira@wur.nl>
+# Author: Ernesto JARDIM <ernesto.jardim@ipma.pt>
+#         Colin MILLAR <colin.millar@ices.dk>
+#         Iago MOSQUEIRA <iago.mosqueira@wur.nl>
 #
 # Distributed under the terms of the EUPL-1.2
 
+# Before: model/model.rda
+# After:
 
 library(FLasher)
 
+# SETTINGS
 set.seed(697)
-
-# LOAD model results and refpts
-
-load("model/model.rda")
-load("boot/data/refpts.rda")
-
-
-# --- SETUP assumptions
-
-# TAC current year (2025)
-tac <- FLQuant(10000, dimnames=list(age='all', year=2025), units="tonnes")
-
-# Advice current year (2025)
-advice <- FLQuant(10696, dimnames=list(age='all', year=2025), units="tonnes")
-
-# data, intermediate, advice and final YEARS
 dy <- dims(run)$maxyear
 iy <- dy + 1
 ay <- iy + 1
 fy <- ay + 1
 
+# LOAD model results and refpts
+
+load("model/model.rda")
+
+# NOTE: BUILD (fake) refpts
+refpts <- FLPar(Btrigger=483000, Fmsy=0.22, Blim=350000, Bpa=483000,
+  Flim=0.30, Fpa=0.22, lFmsy=0.18, uFmsy=0.22)
+
+# -- SETUP assumptions
+
+# TAC current year (iy)
+tac <- FLQuant(110000, dimnames=list(age='all', year=iy), units="tonnes")
+
+# Advice current year (iy)
+advice <- FLQuant(110000, dimnames=list(age='all', year=iy), units="tonnes")
+
 # GEOMEAN recruitment but last year
-rec0gm <- exp(mean(log(window(stock.n(run)["0",], end=-1))))
+rec0gm <- exp(mean(log(window(rec(run), end=-1))))
 
 # GENERATE targets from refpts
 targets <- expand(as(refpts, 'FLQuant'), year=ay)
 
-
-# --- SETUP future
+# -- SETUP future
 
 # EXTEND for 3 years, 5 year mean wts/selex, 3 year mean discards
 fut <- stf(run, nyears=3, wts.nyears=5, fbar.nyears=5, disc.nyears=3)
 
-# SET geomean SRR
-gmsrr <- predictModel(model=rec~a, params=FLPar(c(rec0gm), units="thousands",
-  dimnames=list(params="a", year=seq(iy, length=3), iter=1)))
-gmsrr <- FLQuant(rec0gm, dimnames=list(age=0, year=2025:2027))
+# SET future SRR: geomean all years but first
+gmsrr <- FLQuant(rec0gm, dimnames=list(age=0, year=seq(iy, fy)))
 
+# -- INTERMEDIATE year assumption
 
-# --- INTERMEDIATE year assumption
+# (1) TAC full uptake: C iy = TAC iy
+fut <- fwd(fut, sr=gmsrr, catch=tac)
 
-# https://www.visned.nl/voor-vissers/update-overzicht-benutting-visquota-20-03-2024
-# 2025                - 2024
-# Tong 6.521 787 12 % - 3.222 765 24 % 
+# (2) Fsqo: F iy = F dy
+# fut <- fwd(fut, sr=gmsrr, fbar=expand(fbar(run)[, ac(dy)], year=iy))
 
-# C 2025 = TAC 2025 * 0.50
-fut <- fwd(fut, sr=gmsrr, catch=tac * 0.50)
-
-# F 2025 = F 2024
-# fut <- fwd(fut, sr=gmsrr, fbar=expand(fbar(run)[, '2024'], year=2025))
-
-# UPDATE 2025
+# UPDATE iy advice rule can compute
 fut <- fwd(fut, sr=gmsrr, fbar=targets["Fmsy",])
 
-
-# --- PROJECT catch options
+# -- PROJECT catch options
 
 # DEFINE catch options
 catch_options <- list(
@@ -139,8 +134,7 @@ catch(futs$advice)[, ac(iy:ay)]
 # SAVE
 save(futs, file="model/forecast.rda", compress="xz")
 
-
-# --- PROJECT F levels
+# -- PROJECT at multiple F levels
 
 flevels <- seq(0, 0.50, by=0.01)
 
@@ -156,7 +150,7 @@ ffutsum <- Reduce(rbind, Map(function(x, y)
   x=ffuts, y=names(ffuts)))
 
 
-# SAVE
-save(ffuts, file="model/forecast_f_levels.rda", compress="xz")
+# - SAVE
 
+save(ffuts, file="model/forecast_f_levels.rda", compress="xz")
 write.csv(ffutsum, file="model/forecast_f_levels.csv")
