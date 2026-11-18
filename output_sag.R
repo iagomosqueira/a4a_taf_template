@@ -14,20 +14,19 @@ library(FLasher)
 
 # --- SAG
 
-load('output/output_sol.27.4_wgnnsk-2025.rda')
-
 # GET advice forecast
 fut <- futs$advice
 
 # INFO {{{
-info <- stockInfo(StockCode="sol.27.4", AssessmentYear=iy,
-  Purpose = "Advice", StockCategory=1, ContactPerson="iago.mosqueira@wur.nl",
+info <- stockInfo(StockCode="ple.27.420", AssessmentYear=iy,
+  Purpose = "Advice", StockCategory=1, ContactPerson="name.surname@inst.co",
   
   # A: Age based (like VPA, SCA, SAM) 
-  ModelType="A", ModelName="SS3",
+  # CHECK: a4a code
+  ModelType="A", ModelName="a4a",
   
   # rec
-  RecruitmentDescription="Recruitment", RecruitmentAge=0,
+  RecruitmentDescription="Recruitment", RecruitmentAge=1,
   # NE3: Number of individuals in thousands (x1000) (fisheries) 
   RecruitmentUnits="NE3",
   
@@ -120,4 +119,4 @@ cat(xmlfile, file="output/sol_27_4.xml")
 # https://www.ices.dk/data/assessment-tools/Pages/stock-assessment-graphs.aspx
 
 # CHECK SAG
-# findAssessmentKey('sol.27.4', year=iy, published = TRUE)
+# findAssessmentKey('ple.27.420', year=iy, published = TRUE)

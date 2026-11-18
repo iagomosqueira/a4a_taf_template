@@ -17,6 +17,7 @@ library(FLa4a)
 
 # LOAD model results
 load("model/model.rda")
+load("model/forecast.rda")
 
 # -- UPDATE stk
 
@@ -30,7 +31,10 @@ run_input <- transform(stk, stock.n=stock.n(fit), harvest=harvest(fit))
 run_sim <- stk + sim
 
 # SAVE output
-save(run, run_input, run_sim, file="output/output.rda", compress="xz")
+save(run, run_input, run_sim, futs, file="output/output.rda", compress="xz")
+
+# RUN SAG
+source("output_sag.R", echo=TRUE)
 
 # -- CREATE report tables
 
