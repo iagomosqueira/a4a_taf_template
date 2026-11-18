@@ -82,11 +82,19 @@ diags_catch <- computeCatchDiagnostics(fit, stk)
 # RUN simulation
 sim <- simulate(fit, its)
 
-# -- RUN forecast
-
+# RUN forecast
 source("model_forecast.R", echo = TRUE)
 
-# -- SAVE model output
-
+# SAVE model output
 save(stk, idx, fit, run, resid, hind_idx, sim, diags_catch,
   file = "model/model.rda", compress = "xz")
+
+# -- McMC
+
+# source("model_mcmc.R", echo = TRUE)
+
+# source("model_forecast.R", echo = TRUE)
+
+# SAVE model output
+# save(stk, idx, fit, run, resid, hind_idx, sim, diags_catch,
+#   file = "model/model_mcmc.rda", compress = "xz")

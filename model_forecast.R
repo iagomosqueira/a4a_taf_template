@@ -10,6 +10,8 @@
 # Before: model/model.rda
 # After:
 
+# TODO: CHANGE ssb_flash
+
 library(FLasher)
 
 load("model/model.rda")
@@ -43,6 +45,7 @@ targets <- expand(as(refpts, 'FLQuant'), year=ay)
 
 # EXTEND for 3 years, 5 year mean wts/selex, 3 year mean discards
 fut <- stf(run, nyears=3, wts.nyears=5, fbar.nyears=5, disc.nyears=3)
+# TODO: fwdWindow
 
 # SET future SRR: geomean all years but first
 gmsrr <- FLQuant(rec0gm, dimnames=list(age=0, year=seq(iy, fy)))
@@ -64,8 +67,9 @@ fut <- fwd(fut, sr=gmsrr, fbar=targets["Fmsy",])
 catch_options <- list(
 
   # advice
+  # TODO: CHECK advice rule object
   advice=FLQuants(fbar=targets["Fmsy",] *
-    min((ssb(fut)[, ac(ay)] / refpts$Btrigger), 1)),
+    min((ssb(fut)[, ac(ay)] %/% refpts$Btrigger), 1)),
 
   # FMSY
   Fmsy=FLQuants(fbar=targets["Fmsy",]),
@@ -78,7 +82,7 @@ catch_options <- list(
 
   # lowFMSYadvice
   lFmsyadvice=FLQuants(fbar=targets["lFmsy",] *
-    min((ssb(fut)[, ac(ay)] / refpts$Btrigger), 1)),
+    min((ssb(fut)[, ac(ay)] %/% refpts$Btrigger), 1)),
 
   # F0
   F0=FLQuants(fbar=FLQuant(0, dimnames=list(age='all', year=ay))),
@@ -116,7 +120,7 @@ F0 <- FLQuants(fbar=FLQuant(0, dimnames=list(age='all', year=fy)))
 
 # CONVERT to fwdControl: intermediate year + catch option + F0
 
-fctls <- lapply(catch_options, function(x)
+fctls <- lapply(catch_options[1:2], function(x)
   as(FLQuants(c(x, F0)), "fwdControl")
 )
 
@@ -131,22 +135,3 @@ catch(futs$advice)[, ac(iy:ay)]
 
 # SAVE
 save(futs, file="model/forecast.rda", compress="xz")
-
-# -- PROJECT at multiple F levels
-
-flevels <- seq(0, 0.50, by=0.01)
-
-# BUILD control with targets as iters
-control <- as(FLQuants(fbar=append(FLQuant(flevels,
-  dimnames=list(age='all', year=ay, iter=seq(flevels))), F0[[1]])), "fwdControl")
-
-# RUN
-ffuts <- divide(fwd(fut, sr=gmsrr, control=control), names=flevels)
-
-ffutsum <- Reduce(rbind, Map(function(x, y)
-  cbind(F2026=y, model.frame(metrics(window(x, start=2020)), drop=TRUE)),
-  x=ffuts, y=names(ffuts)))
-
-# SAVE
-save(ffuts, file="model/forecast_f_levels.rda", compress="xz")
-write.csv(ffutsum, file="model/forecast_f_levels.csv")

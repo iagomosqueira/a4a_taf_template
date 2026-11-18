@@ -111,7 +111,7 @@ fishdata$High_FishingPressure[i] <- c(uppq(metsci$F)[,-n])
 xmlfile <- createSAGxml(info, fishdata)
 
 # SAVE to file
-cat(xmlfile, file="output/sol_27_4.xml")
+cat(xmlfile, file="output/ple_27_420.xml")
 
 # UPLOAD 
 # options(icesSAG.use_token = TRUE)
