@@ -12,16 +12,14 @@
 
 library(FLasher)
 
+load("model/model.rda")
+
 # SETTINGS
 set.seed(697)
 dy <- dims(run)$maxyear
 iy <- dy + 1
 ay <- iy + 1
 fy <- ay + 1
-
-# LOAD model results and refpts
-
-load("model/model.rda")
 
 # NOTE: BUILD (fake) refpts
 refpts <- FLPar(Btrigger=483000, Fmsy=0.22, Blim=350000, Bpa=483000,
@@ -149,8 +147,6 @@ ffutsum <- Reduce(rbind, Map(function(x, y)
   cbind(F2026=y, model.frame(metrics(window(x, start=2020)), drop=TRUE)),
   x=ffuts, y=names(ffuts)))
 
-
-# - SAVE
-
+# SAVE
 save(ffuts, file="model/forecast_f_levels.rda", compress="xz")
 write.csv(ffutsum, file="model/forecast_f_levels.csv")

@@ -13,7 +13,7 @@
 #   - fit: model fit, a4aFitSA
 #   - resid: git residuals, a4aFitResiduals
 #   - hind_idx: hindcasted indices, list (FLIndices)
-#   - retro_stks: retrospectiove runs, FLStocks
+#   - retro_stks: retrospective runs, FLStocks
 #   - sim: simulated fit, a4aFitSA
 #   - diags_catch: catch diagnostics, a4aFitCatchDiagn
 
@@ -50,7 +50,14 @@ qmod <- list(~s(age, k = 6), ~s(age, k = 5), ~s(age, k = 6))
 
 fit <- sca(stk, idx, fmodel=fmod, qmodel=qmod, srmodel=srmod, n1model=n1mod)
 
-# -- RUN retrospective and hindcast analyses
+# OUTPUT run
+
+run <- stk + fit
+
+# -- RUN retrospective
+
+
+# -- RUN hindcast analysis
 
 library(doFuture)
 plan(multisession, workers = 3)
@@ -58,14 +65,7 @@ plan(multisession, workers = 3)
 hind <- a4ahcxval(stk, idx, nyears = nyr, nsq = nsq,
   fmodel=fmod, qmodel=qmod, srmodel=srmod, n1model=n1mod)
 
-# EXTRACT retro FLStocks and hindcast FLIndices
-retro_stks <- hind$stocks
 hind_idx <- hind$indices
-
-# CHECK Mohn's rho
-mohn(mohnMatrix(retro_stks, 'ssb'))
-mohn(mohnMatrix(retro_stks, 'fbar'))
-mohn(mohnMatrix(retro_stks, 'rec'))
 
 # -- DIAGNOSE model
 
@@ -82,7 +82,11 @@ diags_catch <- computeCatchDiagnostics(fit, stk)
 # RUN simulation
 sim <- simulate(fit, its)
 
+# -- RUN forecast
+
+source("model_forecast.R", echo = TRUE)
+
 # -- SAVE model output
 
-save(stk, idx, fit, resid, hind_idx, retro_stks, sim, diags_catch,
+save(stk, idx, fit, run, resid, hind_idx, sim, diags_catch,
   file = "model/model.rda", compress = "xz")

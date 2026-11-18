@@ -34,6 +34,10 @@ save(run, run_input, run_sim, file="output/output.rda", compress="xz")
 
 # -- CREATE report tables
 
+# TODO: COPY sol.27.4 code for tables using flextable (IM)
+# - Advice sheet tables
+# - Report tables
+
 # -- SAVE FLStocks for WGMIXFISH
 
 ple27420 <- FLStocks(input=run_input, prediction=run)
