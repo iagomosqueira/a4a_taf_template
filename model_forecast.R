@@ -120,7 +120,7 @@ F0 <- FLQuants(fbar=FLQuant(0, dimnames=list(age='all', year=fy)))
 
 # CONVERT to fwdControl: intermediate year + catch option + F0
 
-fctls <- lapply(catch_options[1:2], function(x)
+fctls <- lapply(catch_options, function(x)
   as(FLQuants(c(x, F0)), "fwdControl")
 )
 
