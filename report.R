@@ -1,7 +1,7 @@
 # report.R - Prepare plots and tables for report
 # a4a_taf_template/report.R
 
-# Author: Ernesto JARDIM <ernesto.jardim@ipma.pt>
+# Authors: Ernesto JARDIM <ernesto.jardim@ipma.pt>
 #         Colin MILLAR <colin.millar@ices.dk>
 #         Iago MOSQUEIRA <iago.mosqueira@wur.nl>
 #

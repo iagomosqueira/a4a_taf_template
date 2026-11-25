@@ -1,21 +1,26 @@
-# output_sag.R - DESC
-# 2020_sol.27.4_forecast/output_sag.R
+# output_sag.R - Prepare and upload stock assessment group (SAG) data
+# a4a_taf_template/output_sag.R
 
-# Copyright Iago MOSQUEIRA (WMR), 2023
-# Author: Iago MOSQUEIRA (WMR) <iago.mosqueira@wur.nl>
+# Authors: Ernesto JARDIM <ernesto.jardim@ipma.pt>
+#          Colin MILLAR <colin.millar@ices.dk>
+#          Iago MOSQUEIRA <iago.mosqueira@wur.nl>
 #
 # Distributed under the terms of the EUPL-1.2
 
+# Before:
+# After:
 
 library(icesSAG)
 library(FLasher)
-
-# https://standardgraphs.ices.dk/manage/ViewGraphsAndTables.aspx?key=14120
 
 # --- SAG
 
 # GET advice forecast
 fut <- futs$advice
+
+# GET uncertainty metrics
+metsci <- lapply(metrics(run_sim, metrics=list(Rec=rec, SSB=ssb, F=fbar)), 
+  FLQuantPoint)
 
 # INFO {{{
 info <- stockInfo(StockCode="ple.27.420", AssessmentYear=iy,
@@ -65,7 +70,7 @@ info <- stockInfo(StockCode="ple.27.420", AssessmentYear=iy,
 info$StockCategory <- 1
 
 # DATA
-fishdata <- stockFishdata(seq(1957, iy))
+fishdata <- stockFishdata(seq(y0, iy))
 
 # LAST year
 n <- length(fishdata$Year)
@@ -73,7 +78,7 @@ n <- length(fishdata$Year)
 i <- seq(n - 1)
 
 # Recruitment
-fishdata$Recruitment[i] <- c(mean(metsci$Rec))
+fishdata$Recruitment[i] <- c(median(metsci$Rec))
 fishdata$Recruitment[n] <- c(iter(rec(fut)[, ac(iy)], 1))
 fishdata$Low_Recruitment[i] <- c(lowq(metsci$Rec))
 fishdata$High_Recruitment[i] <- c(uppq(metsci$Rec))

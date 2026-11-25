@@ -1,7 +1,7 @@
-# model_forecast.R - Run short-terem forecast
+# model_forecast.R - Run short-term forecast
 # a4a_taf_template/model_forecast.R
 
-# Author: Ernesto JARDIM <ernesto.jardim@ipma.pt>
+# Authors: Ernesto JARDIM <ernesto.jardim@ipma.pt>
 #         Colin MILLAR <colin.millar@ices.dk>
 #         Iago MOSQUEIRA <iago.mosqueira@wur.nl>
 #
@@ -22,10 +22,6 @@ dy <- dims(run)$maxyear
 iy <- dy + 1
 ay <- iy + 1
 fy <- ay + 1
-
-# NOTE: BUILD (fake) refpts
-refpts <- FLPar(Btrigger=483000, Fmsy=0.22, Blim=350000, Bpa=483000,
-  Flim=0.30, Fpa=0.22, lFmsy=0.18, uFmsy=0.22)
 
 # -- SETUP assumptions
 

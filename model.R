@@ -1,9 +1,9 @@
 # model.R - Run analysis, write model results
 # a4a_taf_template/model.R
 
-# Author: Ernesto JARDIM <ernesto.jardim@ipma.pt>
-#         Colin MILLAR <colin.millar@ices.dk>
-#         Iago MOSQUEIRA <iago.mosqueira@wur.nl>
+# Authors: Ernesto JARDIM <ernesto.jardim@ipma.pt>
+#          Colin MILLAR <colin.millar@ices.dk>
+#          Iago MOSQUEIRA <iago.mosqueira@wur.nl>
 #
 # Distributed under the terms of the EUPL-1.2
 
@@ -86,7 +86,7 @@ sim <- simulate(fit, its)
 source("model_forecast.R", echo = TRUE)
 
 # SAVE model output
-save(stk, idx, fit, run, resid, hind_idx, sim, diags_catch,
+save(stk, idx, fit, run, resid, hind_idx, sim, diags_catch, refpts,
   file = "model/model.rda", compress = "xz")
 
 # -- McMC
