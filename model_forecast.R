@@ -13,8 +13,6 @@
 
 library(FLasher)
 
-load("model/model.rda")
-
 # SETTINGS
 set.seed(697)
 dy <- dims(run)$maxyear
@@ -89,13 +87,13 @@ catch_options <- list(
   Flim=FLQuants(fbar=targets["Flim",]),
 
   # Bpa
-  Bpa=FLQuants(ssb_nextyear=targets["Bpa",]),
+  Bpa=FLQuants(ssb_next=targets["Bpa",]),
 
   # Blim
-  Blim=FLQuants(ssb_nextyear=targets["Blim",]),
+  Blim=FLQuants(ssb_next=targets["Blim",]),
 
   # MSYBtrigger
-  MSYBtrigger=FLQuants(ssb_nextyear=targets["Btrigger",]),
+  MSYBtrigger=FLQuants(ssb_next=targets["Btrigger",]),
 
   # F iy
   lastF=FLQuants(fbar=expand(fbar(fut)[, ac(iy)], year=ay)),
