@@ -10,7 +10,6 @@
 # Before: model/model.rda
 # After:
 
-# TODO: CHANGE ssb_flash
 
 library(FLasher)
 
@@ -90,13 +89,13 @@ catch_options <- list(
   Flim=FLQuants(fbar=targets["Flim",]),
 
   # Bpa
-  Bpa=FLQuants(ssb_flash=targets["Bpa",]),
+  Bpa=FLQuants(ssb_nextyear=targets["Bpa",]),
 
   # Blim
-  Blim=FLQuants(ssb_flash=targets["Blim",]),
+  Blim=FLQuants(ssb_nextyear=targets["Blim",]),
 
   # MSYBtrigger
-  MSYBtrigger=FLQuants(ssb_flash=targets["Btrigger",]),
+  MSYBtrigger=FLQuants(ssb_nextyear=targets["Btrigger",]),
 
   # F iy
   lastF=FLQuants(fbar=expand(fbar(fut)[, ac(iy)], year=ay)),
