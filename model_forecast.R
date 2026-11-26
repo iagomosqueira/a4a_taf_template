@@ -36,9 +36,9 @@ targets <- expand(as(refpts, 'FLQuant'), year=ay)
 
 # -- SETUP future
 
-# EXTEND for 3 years, 5 year mean wts/selex, 3 year mean discards
-fut <- stf(run, nyears=3, wts.nyears=5, fbar.nyears=5, disc.nyears=3)
-# TODO: fwdWindow
+# EXTEND until fy, 5 year mean wts/selex, 3 year mean discards
+fut <- fwdWindow(run, end=fy, nsq=3, years=list(catch.sel=5, wt=5))
+fut <- fwdWindow(run_sim, end=fy, nsq=3, years=list(catch.sel=5, wt=5))
 
 # SET future SRR: geomean all years but first
 gmsrr <- FLQuant(rec0gm, dimnames=list(age=0, year=seq(iy, fy)))
@@ -125,6 +125,8 @@ Map(compare, futs, fctls)
 
 # CHECK advice ay
 catch(futs$advice)[, ac(iy:ay)]
+
+# TODO: RUN advice with uncertainty
 
 # SAVE
 save(futs, file="model/forecast.rda", compress="xz")
