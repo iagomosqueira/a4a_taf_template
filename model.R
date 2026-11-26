@@ -13,7 +13,7 @@
 #   - fit: model fit, a4aFitSA
 #   - resid: git residuals, a4aFitResiduals
 #   - hind_idx: hindcasted indices, list (FLIndices)
-#   - retro_stks: retrospective runs, FLStocks
+#   - retros: retrospective runs, FLStocks
 #   - sim: simulated fit, a4aFitSA
 #   - diags_catch: catch diagnostics, a4aFitCatchDiagn
 
@@ -56,6 +56,7 @@ run <- stk + fit
 
 # -- RUN retrospective
 
+retros <- retro(stk = stk, idxs = idx, fit = fit, peels = 5)
 
 # -- RUN hindcast analysis
 
@@ -86,7 +87,7 @@ sim <- simulate(fit, its)
 source("model_forecast.R", echo = TRUE)
 
 # SAVE model output
-save(stk, idx, fit, run, resid, hind_idx, sim, diags_catch, refpts,
+save(stk, idx, fit, run, resid, hind_idx, sim, diags_catch, refpts, retros,
   file = "model/model.rda", compress = "xz")
 
 # -- McMC
